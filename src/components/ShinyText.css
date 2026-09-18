@@ -1,0 +1,23 @@
+.shiny-text {
+  display: inline-block;
+}
+
+/*
+  The effect works by painting a gradient and clipping it to the glyphs, with
+  the text's own fill set to transparent. Where that painting is overridden the
+  text would render as nothing at all, so hand the fill back to the text.
+*/
+@media (forced-colors: active) {
+  .shiny-text {
+    background-image: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: CanvasText !important;
+  }
+}
+
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  .shiny-text {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sarathkumar-sk.vercel.app/sitemap.xml

@@ -1,0 +1,7 @@
+# Never upload: dependency tree, build output, and the pre-compression
+# video backups. Vercel installs and builds these itself.
+node_modules
+dist
+_media-originals
+.git
+.github

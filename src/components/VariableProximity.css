@@ -1,0 +1,23 @@
+/*
+  No font-family here on purpose. The published component loads Roboto Flex
+  from Google Fonts; this project self-hosts Archivo Variable and carries no
+  external font requests, so the effect runs on the page's own typeface and
+  drives Archivo's 'wght' and 'wdth' axes.
+
+  .sr-only is deliberately absent too: Tailwind already ships it.
+*/
+
+.variable-proximity {
+  font-variant-ligatures: none;
+}
+
+/*
+  The per-letter weight changes are a pointer affordance, not information.
+  Anyone who has asked for less motion gets the resting weight and nothing
+  that shifts as the cursor moves.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .variable-proximity span {
+    font-variation-settings: inherit !important;
+  }
+}

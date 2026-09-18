@@ -1,0 +1,294 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Design system: "Optical bench".
+  One light source (the sun) defines the whole page. Surfaces are machined
+  metal and paper; the only accent is safety orange, the colour robotics
+  hardware is actually painted. All colours are HSL triplets so Tailwind's
+  hsl(var(--token)) bridge keeps working.
+*/
+
+@layer base {
+  :root {
+    /* Neutrals: cool steel, never warm cream */
+    --background: 220 16% 96%;
+    --foreground: 220 14% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 14% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 14% 10%;
+
+    /* Single locked accent: safety orange */
+    --primary: 20 88% 42%;
+    --primary-foreground: 40 40% 98%;
+    --primary-glow: 22 92% 52%;
+
+    --secondary: 220 14% 91%;
+    --secondary-foreground: 220 14% 10%;
+
+    --muted: 220 14% 91%;
+    --muted-foreground: 220 8% 42%;
+
+    --accent: 20 88% 42%;
+    --accent-foreground: 40 40% 98%;
+
+    --destructive: 0 68% 44%;
+    --destructive-foreground: 40 40% 98%;
+
+    --border: 220 13% 86%;
+    --input: 220 13% 86%;
+    --ring: 20 88% 42%;
+
+    --radius: 0.25rem;
+
+    /* The sun. SunLayer writes these on scroll; they are the page's light. */
+    --sun-x: 78%;
+    --sun-y: 8%;
+    --sun-intensity: 0.5;
+    --sun-tint: 34 96% 60%;
+
+    /* Specular highlight for text. The same colour family as the copy it
+       crosses, only lit, so a sweep reads as light on the letterform rather
+       than the text changing colour. */
+    --shine: 220 10% 48%;
+
+    --sky:
+      radial-gradient(
+        120vmax 90vmax at var(--sun-x) var(--sun-y),
+        hsl(var(--sun-tint) / calc(0.22 * var(--sun-intensity))),
+        transparent 46%
+      ),
+      radial-gradient(90vmax 70vmax at calc(100% - var(--sun-x)) 90%, hsl(210 40% 60% / 0.12), transparent 55%);
+
+    --edge-light: inset 0 1px 0 hsl(0 0% 100% / 0.9);
+    --shadow-lift: 0 1px 2px hsl(220 20% 10% / 0.05), 0 12px 32px -12px hsl(220 20% 10% / 0.18);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 14% 10%;
+    --sidebar-primary: 220 14% 10%;
+    --sidebar-primary-foreground: 40 40% 98%;
+    --sidebar-accent: 220 14% 91%;
+    --sidebar-accent-foreground: 220 14% 10%;
+    --sidebar-border: 220 13% 86%;
+    --sidebar-ring: 20 88% 42%;
+  }
+
+  .dark {
+    /* Low sun in a dark lab. Off-black, never #000. */
+    --background: 220 18% 7%;
+    --foreground: 220 12% 94%;
+
+    --card: 220 16% 10%;
+    --card-foreground: 220 12% 94%;
+
+    --popover: 220 16% 10%;
+    --popover-foreground: 220 12% 94%;
+
+    --primary: 22 92% 56%;
+    --primary-foreground: 220 18% 7%;
+    --primary-glow: 26 96% 64%;
+
+    --secondary: 220 14% 14%;
+    --secondary-foreground: 220 12% 94%;
+
+    --muted: 220 14% 14%;
+    --muted-foreground: 220 9% 64%;
+
+    --accent: 22 92% 56%;
+    --accent-foreground: 220 18% 7%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 220 12% 94%;
+
+    --border: 220 12% 19%;
+    --input: 220 12% 19%;
+    --ring: 22 92% 56%;
+
+    --sun-tint: 26 96% 58%;
+
+    --shine: 0 0% 100%;
+
+    --sky:
+      radial-gradient(
+        120vmax 90vmax at var(--sun-x) var(--sun-y),
+        hsl(var(--sun-tint) / calc(0.20 * var(--sun-intensity))),
+        transparent 44%
+      ),
+      radial-gradient(90vmax 70vmax at calc(100% - var(--sun-x)) 92%, hsl(210 70% 40% / 0.16), transparent 55%);
+
+    --edge-light: inset 0 1px 0 hsl(0 0% 100% / 0.07);
+    --shadow-lift: 0 1px 2px hsl(0 0% 0% / 0.4), 0 16px 40px -16px hsl(0 0% 0% / 0.7);
+
+    --sidebar-background: 220 16% 10%;
+    --sidebar-foreground: 220 12% 94%;
+    --sidebar-primary: 22 92% 56%;
+    --sidebar-primary-foreground: 220 18% 7%;
+    --sidebar-accent: 220 14% 14%;
+    --sidebar-accent-foreground: 220 12% 94%;
+    --sidebar-border: 220 12% 19%;
+    --sidebar-ring: 22 92% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    /*
+      clip, not hidden. overflow-x: hidden would turn this element into a
+      scroll container and break every position: sticky descendant, which is
+      what the experience stack is built on.
+    */
+    overflow-x: clip;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-synthesis-weight: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+    font-variation-settings: 'wdth' 112;
+    text-wrap: balance;
+  }
+
+  /* Visible keyboard focus everywhere, not just on shadcn primitives */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Page container. One width for the whole site. */
+  .shell {
+    @apply mx-auto w-full max-w-[1400px] px-4 sm:px-8 lg:px-12;
+  }
+
+  /* Section rhythm, VISUAL_DENSITY 4 */
+  .band {
+    @apply relative py-20 md:py-28;
+  }
+
+  /* Display type: Archivo pushed to its expanded width axis. */
+  .display {
+    font-variation-settings: 'wdth' 118;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+
+  /* Machined surface: hairline edge plus a lit top edge, one radius scale. */
+  .surface {
+    @apply relative rounded border border-border bg-card;
+    box-shadow: var(--edge-light);
+  }
+
+  .surface-raised {
+    @apply surface;
+    box-shadow: var(--edge-light), var(--shadow-lift);
+  }
+
+  /*
+    Specular sweep. The highlight sits where the sun is, so it tracks the
+    same light as the WebGL scene instead of being a decorative gradient.
+  */
+  .sunlit {
+    position: relative;
+  }
+
+  /* Sits above the content, like light landing on a surface, never below it. */
+  .sunlit::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+      calc(var(--sun-angle, 120) * 1deg),
+      hsl(var(--sun-tint) / calc(0.15 * var(--sun-intensity))),
+      transparent 45%
+    );
+  }
+
+  /* Hairline used to group content instead of boxing it in cards. */
+  .rule {
+    @apply h-px w-full bg-border;
+  }
+
+  .mono {
+    @apply font-mono text-[0.8125rem] tabular-nums;
+  }
+
+  /* Text link with an underline that grows from the left on hover. */
+  .link-sweep {
+    @apply relative inline-flex items-center gap-2 transition-colors;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
+  }
+
+  .link-sweep:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Horizontal scroll rail used for skills and certificates. */
+  .rail {
+    @apply flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4;
+    scrollbar-width: thin;
+  }
+
+  .rail > * {
+    @apply snap-start;
+  }
+}
